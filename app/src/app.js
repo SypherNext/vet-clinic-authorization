@@ -1,0 +1,77 @@
+// Builds the Express app from its parts. server.js starts it with the real
+// database and clock; tests build their own copy with fakes.
+//
+// deps = { config, db, clock }: everything the routes need, passed in rather
+// than imported, so any part can be swapped in a test. createApp adds the
+// policy and the authorize() gatekeeper built from it, so every route uses
+// the same rules and the same clock.
+import express from 'express';
+import path from 'node:path';
+import { plural, formatTime } from './format.js';
+import { notFound, errorHandler } from './http/errors.js';
+import { securityHeaders } from './security/security-headers.js';
+import { csrfProtection } from './security/csrf.js';
+import { createRateLimiters } from './security/rate-limit.js';
+import { sessionMiddleware, viewLocals } from './sessions/sessions.js';
+import { viewPermissions } from './access/view-permissions.js';
+import { createPolicy } from './access/policy.js';
+import { createRelationships } from './access/relationships.js';
+import { createDecisionLog } from './audit/decision-log.js';
+import { createAuthorize } from './access/authorize.js';
+import { sessionRoutes } from './sessions/session-routes.js';
+import { loginRoutes } from './auth/login-routes.js';
+import { portalRoutes } from './portal/portal-routes.js';
+import { adminRoutes } from './portal/admin-routes.js';
+import { sharingRoutes } from './sharing/sharing-routes.js';
+import { tokenRoutes } from './tokens/token-routes.js';
+import { teamRoutes } from './teams/team-routes.js';
+import { careTeamRoutes } from './teams/care-team-routes.js';
+import { roleLabel } from './access/roles.js';
+import { apiRoutes } from './api/api-routes.js';
+
+// Every group of pages. Each one is a function that takes deps and returns a router.
+const PAGE_ROUTES = [
+  portalRoutes, careTeamRoutes, sharingRoutes, tokenRoutes, loginRoutes, sessionRoutes, adminRoutes, teamRoutes,
+];
+
+export function createApp(baseDeps) {
+  const relationships = createRelationships(baseDeps.db);
+  const policy = createPolicy({ ...baseDeps, relationships });
+  const deps = {
+    ...baseDeps,
+    policy,
+    authorize: createAuthorize({ policy, decisionLog: createDecisionLog(baseDeps) }),
+    rateLimiters: createRateLimiters(baseDeps),
+  };
+  const app = express();
+  app.set('views', path.join(import.meta.dirname, 'views'));
+  app.set('view engine', 'ejs');
+  app.disable('x-powered-by');
+  app.locals.networkName = deps.config.networkName;
+  app.locals.plural = plural;
+  app.locals.formatTime = formatTime;
+  app.locals.roleLabel = roleLabel;
+  // Defaults for every page; the session middleware fills in the real values.
+  app.locals.user = null;
+  app.locals.csrfToken = '';
+  app.locals.flash = null;
+  app.locals.menu = [];
+
+  app.use(securityHeaders);
+  app.use(express.static(path.join(import.meta.dirname, 'public')));
+  app.use(express.urlencoded({ extended: false, limit: '10kb' }));
+
+  // The API sends a token in a header on every request and uses no cookie,
+  // so it needs neither a session nor a CSRF token. It is mounted before them.
+  app.use('/api', apiRoutes(deps));
+
+  app.use(sessionMiddleware(deps));
+  app.use(csrfProtection(deps));
+  app.use(viewLocals(deps));
+  app.use(viewPermissions(deps));
+  for (const routes of PAGE_ROUTES) app.use(routes(deps));
+
+  app.use(notFound);
+  app.use(errorHandler);
+  return app;
+}

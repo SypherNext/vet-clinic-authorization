@@ -1,0 +1,16 @@
+<%- include('partials/head', { title: 'My care team' }) %>
+<h1>My care team</h1>
+<p class="muted">The pets looked after by the care teams you are on. Your clinic's admin decides who is on which team.</p>
+<% if (pets.length === 0) { %>
+  <p class="muted">You are not on a care team yet.</p>
+<% } else { %>
+<table class="table">
+  <thead><tr><th>Pet</th><th>Owner</th><th>Team</th></tr></thead>
+  <tbody>
+  <% for (const p of pets) { %>
+    <tr><td><a href="/pets/<%= p.id %>"><%= p.name %></a> (<%= p.species %>)</td><td><%= p.owner_name %></td><td><%= p.team_name %></td></tr>
+  <% } %>
+  </tbody>
+</table>
+<% } %>
+<%- include('partials/foot') %>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="<%= csrfToken %>">
+  <title><%= typeof title !== 'undefined' ? title + ' | ' : '' %><%= clinicName %></title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/"><span class="paw">&#10047;</span> <%= clinicName %></a>
+  <nav>
+    <% if (user) { %>
+      <% if (user.role === 'owner') { %><a href="/pets">My pets</a><% } %>
+      <% if (user.role === 'vet') { %><a href="/patients">My patients</a><% } %>
+      <% if (user.role === 'receptionist' || user.role === 'admin') { %><a href="/appointments">Appointments</a><% } %>
+      <% if (user.role === 'admin') { %><a href="/admin/users">Users</a><% } %>
+      <span class="who"><%= user.name %> <span class="role"><%= user.role %></span></span>
+      <form method="post" action="/logout"><%- include('csrf') %><button class="link" type="submit">Log out</button></form>
+    <% } else { %>
+      <a href="/login">Log in</a>
+    <% } %>
+  </nav>
+</header>
+<main>
+<% if (flash) { %><div class="<%= flash.tone %>"><%= flash.text %></div><% } %>

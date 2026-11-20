@@ -1,0 +1,14 @@
+<%- include('partials/head', { title: 'My pets' }) %>
+<h1>My pets</h1>
+<% if (pets.length === 0) { %>
+  <p class="muted">No pets on file for this account yet. The clinic adds them at your first visit.</p>
+<% } %>
+<div class="grid">
+<% for (const pet of pets) { %>
+  <a class="card method" href="/pets/<%= pet.id %>">
+    <h2><%= pet.name %></h2>
+    <p class="muted"><%= pet.species %><%= pet.breed ? ', ' + pet.breed : '' %>, born <%= pet.born_on %></p>
+  </a>
+<% } %>
+</div>
+<%- include('partials/foot') %>

@@ -1,0 +1,11 @@
+<%- include('partials/head', { title: 'Users' }) %>
+<h1>Users</h1>
+<table class="table">
+  <thead><tr><th>Name</th><th>Email</th><th>Role</th></tr></thead>
+  <tbody>
+  <% for (const u of users) { %>
+    <tr><td><strong><%= u.name %></strong></td><td><%= u.email %></td><td><span class="role"><%= u.role %></span></td></tr>
+  <% } %>
+  </tbody>
+</table>
+<%- include('partials/foot') %>

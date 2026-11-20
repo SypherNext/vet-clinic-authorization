@@ -1,0 +1,17 @@
+<%- include('partials/head', { title: 'Audit log' }) %>
+<h1>Permission decisions at <%= user.clinic_name %></h1>
+<p class="muted">Every refusal, and every time someone read or shared a medical record. Newest first.</p>
+<% if (decisions.length === 0) { %>
+  <p class="muted">Nothing yet.</p>
+<% } else { %>
+<table class="table">
+  <thead><tr><th>When</th><th>Who</th><th>Tried</th><th>On</th><th>Result</th><th>Why</th><th>Via</th></tr></thead>
+  <tbody>
+  <% for (const d of decisions) { %>
+    <tr><td><%= formatTime(d.created_at) %></td><td><%= d.user_name %></td><td><code><%= d.action %></code></td><td><%= d.object ?? '' %></td>
+      <td><span class="badge <%= d.allowed ? 'good' : 'bad' %>"><%= d.allowed ? 'Allowed' : 'Denied' %></span></td><td><%= d.reason %></td><td><%= d.via %></td></tr>
+  <% } %>
+  </tbody>
+</table>
+<% } %>
+<%- include('partials/foot') %>

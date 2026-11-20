@@ -1,0 +1,12 @@
+<%- include('partials/head', { title: 'Roles' }) %>
+<h1>Roles and what they allow</h1>
+<p class="muted">Built from <code>src/access/roles.js</code> each time the page loads, so it always matches the code. A tick means the role allows the action in general; rules about particular pets and records still apply on top.</p>
+<table class="table matrix">
+  <thead><tr><th>Action</th><% for (const role of roles) { %><th><%= role.label %></th><% } %></tr></thead>
+  <tbody>
+  <% for (const action of actions) { %>
+    <tr><td><code><%= action %></code></td><% for (const role of roles) { %><td class="cell"><%= role.permissions.includes(action) ? '✓' : '' %></td><% } %></tr>
+  <% } %>
+  </tbody>
+</table>
+<%- include('partials/foot') %>

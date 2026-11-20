@@ -1,0 +1,27 @@
+<%- include('partials/head', { title: 'Users' }) %>
+<h1>People at <%= user.clinic_name %></h1>
+<div class="grid">
+<section>
+  <h2>Staff</h2>
+  <table class="table">
+    <thead><tr><th>Name</th><th>Role</th></tr></thead>
+    <tbody>
+    <% for (const u of staff) { %>
+      <tr><td><strong><%= u.name %></strong><br><span class="muted"><%= u.email %></span></td><td><span class="role"><%= u.role %></span></td></tr>
+    <% } %>
+    </tbody>
+  </table>
+</section>
+<section>
+  <h2>Pet owners with pets here</h2>
+  <table class="table">
+    <thead><tr><th>Name</th><th>Email</th></tr></thead>
+    <tbody>
+    <% for (const u of petOwners) { %>
+      <tr><td><strong><%= u.name %></strong></td><td><%= u.email %></td></tr>
+    <% } %>
+    </tbody>
+  </table>
+</section>
+</div>
+<%- include('partials/foot') %>

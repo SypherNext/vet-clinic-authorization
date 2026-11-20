@@ -1,0 +1,14 @@
+# OpenFGA, an open-source relationship-based authorization server, for lesson 11.
+# It keeps its data in memory: stop it and everything is gone, which is fine
+# for a demo. The HTTP API listens on http://127.0.0.1:18910 (your computer only).
+#   docker compose -f examples/openfga/compose.yaml up -d
+#   node examples/openfga/compare.mjs
+#   docker compose -f examples/openfga/compose.yaml down
+name: azrp-openfga
+services:
+  openfga:
+    image: openfga/openfga:v1.22.1
+    container_name: azrp-openfga
+    command: run
+    ports:
+      - "127.0.0.1:18910:8080"

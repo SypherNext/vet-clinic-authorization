@@ -1,0 +1,27 @@
+<%- include('partials/head', { title: 'My patients' }) %>
+<h1>My patients</h1>
+<% if (patients.length === 0) { %>
+  <p class="muted">No appointments booked with you.</p>
+<% } else { %>
+<table class="table">
+  <thead><tr><th>When</th><th>Patient</th><th>Owner</th><th>Reason</th></tr></thead>
+  <tbody>
+  <% for (const p of patients) { %>
+    <tr><td><%= p.starts_at %></td><td><a href="/pets/<%= p.pet_id %>"><%= p.pet_name %></a> (<%= p.species %>)</td><td><%= p.owner_name %></td><td><%= p.reason %></td></tr>
+  <% } %>
+  </tbody>
+</table>
+<% } %>
+<% if (referrals.length > 0) { %>
+<h2 class="section">Referred to you</h2>
+<table class="table">
+  <thead><tr><th>Patient</th><th>From</th><th>Dates</th><th>Reason</th></tr></thead>
+  <tbody>
+  <% for (const r of referrals) { %>
+    <tr><td><% if (r.active) { %><a href="/pets/<%= r.pet_id %>"><%= r.pet_name %></a><% } else { %><%= r.pet_name %><% } %> (<%= r.species %>)</td><td><%= r.from_vet_name %></td>
+      <td><%= r.starts_on %> to <%= r.ends_on %> <span class="badge <%= r.active ? 'good' : 'bad' %>"><%= r.active ? 'Active' : 'Ended' %></span></td><td><%= r.reason %></td></tr>
+  <% } %>
+  </tbody>
+</table>
+<% } %>
+<%- include('partials/foot') %>

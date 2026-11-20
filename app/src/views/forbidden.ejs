@@ -1,0 +1,9 @@
+<%- include('partials/head', { title: 'Not allowed' }) %>
+<section class="card narrow forbidden">
+  <p class="status">403</p>
+  <h1>Not allowed</h1>
+  <p>You are logged in as <strong><%= user.name %></strong> (<%= roleLabel(user.role) %>), and this account is not allowed to open this page.</p>
+  <p class="hint">If you think you should have access, ask the clinic's admin.</p>
+  <a class="button" href="/">Go to your start page</a>
+</section>
+<%- include('partials/foot') %>

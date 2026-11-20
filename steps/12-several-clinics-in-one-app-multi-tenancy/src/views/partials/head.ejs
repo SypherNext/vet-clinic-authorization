@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="<%= csrfToken %>">
+  <title><%= typeof title !== 'undefined' ? title + ' | ' : '' %><%= networkName %></title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/"><span class="paw">&#10047;</span> <%= networkName %></a>
+  <nav>
+    <% if (user) { %>
+      <% for (const link of menu) { %><a href="<%= link.path %>"><%= link.label %></a><% } %>
+      <span class="who"><%= user.name %> <span class="role"><%= user.role %></span><% if (user.clinic_name) { %> <span class="clinic"><%= user.clinic_name %></span><% } %></span>
+      <form method="post" action="/logout"><%- include('csrf') %><button class="link" type="submit">Log out</button></form>
+    <% } else { %>
+      <a href="/login">Log in</a>
+    <% } %>
+  </nav>
+</header>
+<main>
+<% if (flash) { %><div class="<%= flash.tone %>"><%= flash.text %></div><% } %>

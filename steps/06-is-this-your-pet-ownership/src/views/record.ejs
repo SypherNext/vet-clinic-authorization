@@ -1,0 +1,8 @@
+<%- include('partials/head', { title: record.title }) %>
+<p class="muted"><a href="/pets/<%= record.pet_id %>">&larr; <%= record.pet_name %></a></p>
+<section class="card">
+  <h1><%= record.title %></h1>
+  <p class="muted">Medical record for <%= record.pet_name %>, written by <%= record.author_name %> on <%= record.written_on %>.</p>
+  <p><%= record.notes %></p>
+</section>
+<%- include('partials/foot') %>

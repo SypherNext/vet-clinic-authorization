@@ -1,0 +1,31 @@
+<%- include('partials/head', { title: 'Care teams' }) %>
+<h1>Care teams</h1>
+<p class="muted">Vets and vet nurses on a team can see every pet the team looks after, and those pets' medical records.</p>
+<div class="grid">
+<% for (const team of teams) { %>
+<section class="card">
+  <h2><%= team.name %></h2>
+  <p class="muted">Looks after: <%= team.pets.map((p) => p.name).join(', ') || 'no pets yet' %></p>
+  <h3>Members</h3>
+  <% if (team.members.length === 0) { %><p class="muted">Nobody yet.</p><% } %>
+  <ul class="list">
+  <% for (const m of team.members) { %>
+    <li><strong><%= m.name %></strong>
+      <form method="post" action="/admin/teams/<%= team.id %>/members/<%= m.id %>/remove"><%- include('partials/csrf') %><button class="link" type="submit">Remove</button></form></li>
+  <% } %>
+  </ul>
+  <% const others = vets.filter((v) => !team.members.some((m) => m.id === v.id)); %>
+  <% if (others.length > 0) { %>
+  <form method="post" action="/admin/teams/<%= team.id %>/members">
+    <%- include('partials/csrf') %>
+    <label for="user_id_<%= team.id %>">Add a team member</label>
+    <select id="user_id_<%= team.id %>" name="user_id">
+      <% for (const v of others) { %><option value="<%= v.id %>"><%= v.name %></option><% } %>
+    </select>
+    <button type="submit">Add to team</button>
+  </form>
+  <% } %>
+</section>
+<% } %>
+</div>
+<%- include('partials/foot') %>

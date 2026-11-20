@@ -1,0 +1,24 @@
+<%- include('partials/head', { title: pet.name }) %>
+<h1><%= pet.name %></h1>
+<p class="muted"><%= pet.species %><%= pet.breed ? ', ' + pet.breed : '' %>, born <%= pet.born_on %>. Owner: <%= pet.owner_name %>.</p>
+<div class="grid">
+<section class="card">
+  <h2>Appointments</h2>
+  <% if (appointments.length === 0) { %><p class="muted">None booked.</p><% } %>
+  <ul class="list">
+  <% for (const a of appointments) { %>
+    <li><strong><%= a.starts_at %></strong> with <%= a.vet_name %><br><%= a.reason %></li>
+  <% } %>
+  </ul>
+</section>
+<section class="card">
+  <h2>Medical records</h2>
+  <% if (records.length === 0) { %><p class="muted">No records yet.</p><% } %>
+  <ul class="list">
+  <% for (const r of records) { %>
+    <li><strong><%= r.written_on %></strong> <a href="/records/<%= r.id %>"><%= r.title %></a><br><span class="muted">by <%= r.author_name %></span></li>
+  <% } %>
+  </ul>
+</section>
+</div>
+<%- include('partials/foot') %>

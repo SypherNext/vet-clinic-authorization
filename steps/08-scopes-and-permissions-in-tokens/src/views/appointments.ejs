@@ -1,0 +1,15 @@
+<%- include('partials/head', { title: 'Appointments' }) %>
+<h1>Appointments</h1>
+<% if (appointments.length === 0) { %>
+  <p class="muted">No appointments booked.</p>
+<% } else { %>
+<table class="table">
+  <thead><tr><th>When</th><th>Patient</th><th>Owner</th><th>Vet</th><th>Reason</th></tr></thead>
+  <tbody>
+  <% for (const a of appointments) { %>
+    <tr><td><%= a.starts_at %></td><td><a href="/pets/<%= a.pet_id %>"><%= a.pet_name %></a> (<%= a.species %>)</td><td><%= a.owner_name %></td><td><%= a.vet_name %></td><td><%= a.reason %></td></tr>
+  <% } %>
+  </tbody>
+</table>
+<% } %>
+<%- include('partials/foot') %>

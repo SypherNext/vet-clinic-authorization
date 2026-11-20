@@ -1,0 +1,30 @@
+<%- include('partials/head', { title: 'Sharing' }) %>
+<p class="muted"><a href="/records/<%= record.id %>">&larr; <%= record.title %></a></p>
+<h1>Who can read &ldquo;<%= record.title %>&rdquo;</h1>
+<div class="grid">
+<section class="card">
+  <h2>Always</h2>
+  <p>You, as the author, <%= record.pet_name %>'s owner and the vets on <%= record.pet_name %>'s care team. That comes from the pet itself, not from this list.</p>
+</section>
+<section class="card">
+  <h2>Shared with</h2>
+  <% if (shares.length === 0) { %><p class="muted">Nobody else yet.</p><% } %>
+  <ul class="list">
+  <% for (const s of shares) { %>
+    <li><strong><%= s.name %></strong> <span class="muted">shared by <%= s.granted_by_name %></span>
+      <form method="post" action="/records/<%= record.id %>/sharing/<%= s.user_id %>/remove"><%- include('partials/csrf') %><button class="link" type="submit">Remove</button></form></li>
+  <% } %>
+  </ul>
+  <% if (otherVets.length > 0) { %>
+  <form method="post" action="/records/<%= record.id %>/sharing">
+    <%- include('partials/csrf') %>
+    <label for="user_id">Share with another vet</label>
+    <select id="user_id" name="user_id">
+      <% for (const v of otherVets) { %><option value="<%= v.id %>"><%= v.name %></option><% } %>
+    </select>
+    <button type="submit">Share</button>
+  </form>
+  <% } %>
+</section>
+</div>
+<%- include('partials/foot') %>

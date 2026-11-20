@@ -1,0 +1,37 @@
+<%- include('partials/head', { title: 'API tokens' }) %>
+<h1>API tokens</h1>
+<p class="muted">A token lets a script or app use the portal's API as you. It can only do what its scopes allow, and never more than your own account may do.</p>
+<% if (newToken) { %>
+  <div class="ok">
+    <p><strong>Your new token &ldquo;<%= newToken.name %>&rdquo;</strong>. Copy it now: it is not shown again.</p>
+    <p><code class="token"><%= newToken.value %></code></p>
+  </div>
+<% } %>
+<div class="grid">
+<section class="card">
+  <h2>Make a token</h2>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <form method="post" action="/account/tokens">
+    <%- include('partials/csrf') %>
+    <label for="name">Name</label>
+    <input id="name" name="name" type="text" maxlength="40" placeholder="For example: Pet app on my phone" required>
+    <p class="label">Scopes</p>
+    <% for (const scope of offeredScopes) { %>
+      <label class="check"><input type="checkbox" name="scopes" value="<%= scope.name %>"> <code><%= scope.name %></code> <span class="muted"><%= scope.description %></span></label>
+    <% } %>
+    <button type="submit">Make token</button>
+  </form>
+</section>
+<section class="card">
+  <h2>Your tokens</h2>
+  <% if (tokens.length === 0) { %><p class="muted">No tokens yet.</p><% } %>
+  <ul class="list">
+  <% for (const t of tokens) { %>
+    <li><strong><%= t.name %></strong> <% for (const s of t.scopes) { %><code><%= s %></code> <% } %>
+      <br><span class="muted"><%= t.last_used_at ? 'Used recently' : 'Never used' %></span>
+      <form method="post" action="/account/tokens/<%= t.id %>/revoke"><%- include('partials/csrf') %><button class="link" type="submit">Revoke</button></form></li>
+  <% } %>
+  </ul>
+</section>
+</div>
+<%- include('partials/foot') %>
